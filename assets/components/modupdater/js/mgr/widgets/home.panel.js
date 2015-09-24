@@ -20,23 +20,13 @@ modUpdater.panel.Home = function (config) {
 			border: true,
 			hideMode: 'offsets',
 			items: [{
-                title: _('export'),
+                title: _('update'),
 				layout: 'anchor',
 				items: [{
 					html: _('modupdater_intro_msg'),
 					cls: 'panel-desc',
 				}, {
 					xtype: 'modupdater-export-panel',
-					cls: 'main-wrapper',
-				}]
-			}, {
-                title: _('modupdater_import'),
-				layout: 'anchor',
-				items: [{
-                    html: _('modupdater_import_msg'),
-                    cls: 'panel-desc',
-                }, {
-					xtype: 'modupdater-import-panel',
 					cls: 'main-wrapper',
 				}]
 			}]

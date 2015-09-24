@@ -77,7 +77,7 @@ Ext.extend(modUpdater.panel.Export, MODx.FormPanel, {
         });
     },
     
-    _processexport: function(response) {
+    _logProcess: function(response) {
         var lineSeparator = '<br />';
         var logcontainer = document.getElementById(this.config.id + '-export-log');
         var currentlog = Ext.getCmp(this.config.id + '-export-log').body.dom.innerHTML;
@@ -88,6 +88,10 @@ Ext.extend(modUpdater.panel.Export, MODx.FormPanel, {
         exportlog = exportlog.concat(response.object.log);
 	    Ext.getCmp(this.config.id + '-export-log').update(exportlog.join(lineSeparator));
         logcontainer.scrollTop = logcontainer.scrollHeight;
+    },
+    
+    _processexport: function(response) {
+        this._logProcess(response);
         if (!response.object.complete) {
             MODx.Ajax.request({
             	url: modUpdater.config.connector_url
@@ -109,18 +113,10 @@ Ext.extend(modUpdater.panel.Export, MODx.FormPanel, {
             	}
             });
         } else {
-			MODx.Ajax.request({
-				url: MODx.config.connector_url
-				,params: {
-					action: 'browser/file/download'
-					,file: response.object.filepath
-				}
-				,listeners: {
-					'success':{fn:function(r) {
-						location.href = MODx.config.connector_url+'?action=browser/file/download&download=1&file='+response.object.filepath+'&HTTP_MODAUTH='+MODx.siteId+'&wctx='+MODx.ctx;
-					},scope:this}
-				}
-			});
+            if (response.object.filepath) {
+			    document.location.href = response.object.filepath;
+            }
+            //this._logProcess(response);
 		}
     }
     

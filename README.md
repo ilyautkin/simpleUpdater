@@ -1,3 +1,3 @@
 ## modUpdater
 
-MODX addon for linking resources through site
+Кнопка обновления для MODX
