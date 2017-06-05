@@ -1,5 +1,9 @@
 Changelog for simpleUpdater.
 
+2.0.1-beta
+==============
+- Caching of version checking
+
 2.0.0-beta
 ==============
 - Show button on top menu
