@@ -18,9 +18,8 @@ class simpleUpdaterCheckProcessor extends modProcessor {
         $registry = $registry->getRegister('user', 'registry.modDbRegister');
         $registry->connect();
         $topic = '/simpleUpdater/';
-        $key = 'modx-update';
-        $registry->subscribe($topic . $key);
-        $maxVersion = $registry->read(array('poll_limit' => 1, 'remove_read' => false));
+        $registry->subscribe($topic . 'version');
+        $maxVersion = array_shift($registry->read(array('poll_limit' => 1, 'remove_read' => false)));
         if (empty($maxVersion)) {
             $context = stream_context_create(array('http' => array('method' => 'GET', 'header' => 'User-Agent: MODX simpleUpdater')));
             $contents = file_get_contents('https://api.github.com/repos/modxcms/revolution/tags', false, $context);
@@ -48,7 +47,7 @@ class simpleUpdaterCheckProcessor extends modProcessor {
                 $registry->subscribe($topic);
                 $registry->send(
                 	$topic,
-                	array($key => $maxVersion, 'changelog' => $changelog),
+                	array('version' => $maxVersion, 'changelog' => $changelog),
                 	array('ttl' => $ttl)
                 );
             }
@@ -58,9 +57,9 @@ class simpleUpdaterCheckProcessor extends modProcessor {
         $currentVersion .= '.'.$this->modx->version['major_version'];
         $currentVersion .= '.'.$this->modx->version['minor_version'];
         $currentVersion = 'v'.$currentVersion.'-pl';
-        if (version_compare($currentVersion, $maxVersion) > 0) {
+        if (version_compare($currentVersion, $maxVersion, '<')) {
             $registry->subscribe($topic . 'changelog');
-            $changelog = $registry->read(array('poll_limit' => 1, 'remove_read' => false));
+            $changelog = array_shift($registry->read(array('poll_limit' => 1, 'remove_read' => false)));
             if (empty($changelog)) {
                 $changelog = trim(file_get_contents('https://raw.githubusercontent.com/modxcms/revolution/'.$maxVersion.'/core/docs/changelog.txt'));
             }
