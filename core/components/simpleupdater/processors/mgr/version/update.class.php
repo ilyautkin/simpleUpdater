@@ -42,7 +42,6 @@ class simpleUpdaterUpdateProcessor extends modProcessor {
             ModxInstaller::copyFolder($this->modx->getOption('base_path').'temp/'.$dir, $this->modx->getOption('base_path'));
             ModxInstaller::removeFolder($this->modx->getOption('base_path').'temp');
             unlink(basename(__FILE__));
-            header('Location: '.$setupLocation);
         }
         if (!$object['success']) {
             $o = $this->failure('test', array());

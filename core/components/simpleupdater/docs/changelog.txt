@@ -1,20 +1,9 @@
 Changelog for simpleUpdater.
 
-2.0.3-beta
-==============
-- Registry for version cache
-
-2.0.2-beta
-==============
-- Model folder, removed menu
-
-2.0.1-beta
-==============
-- Caching of version checking
-
-2.0.0-beta
+2.1.0-beta
 ==============
 - Show button on top menu
+- Removed menu item
 
 1.0.0-beta
 ==============
