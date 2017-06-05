@@ -6,7 +6,7 @@ $tmp = array(/*
 	'some_setting' => array(
 		'xtype' => 'combo-boolean',
 		'value' => true,
-		'area' => 'modupdater_main',
+		'area' => 'simpleupdater_main',
 	),
 	*/
 );
@@ -16,7 +16,7 @@ foreach ($tmp as $k => $v) {
 	$setting = $modx->newObject('modSystemSetting');
 	$setting->fromArray(array_merge(
 		array(
-			'key' => 'modupdater_' . $k,
+			'key' => 'simpleupdater_' . $k,
 			'namespace' => PKG_NAME_LOWER,
 		), $v
 	), '', true, true);

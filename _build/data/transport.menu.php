@@ -3,8 +3,8 @@
 $menus = array();
 
 $tmp = array(
-	'modupdater' => array(
-		'description' => 'modupdater_menu_desc',
+	'simpleupdater' => array(
+		'description' => 'simpleupdater_menu_desc',
 		'action' => array(
 			'controller' => 'index',
 		),

@@ -1,3 +1,3 @@
-## modUpdater
+## simpleUpdater
 
 Кнопка обновления для MODX

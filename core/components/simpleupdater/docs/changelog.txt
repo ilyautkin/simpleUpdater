@@ -1,0 +1,9 @@
+Changelog for simpleUpdater.
+
+2.0.0-beta
+==============
+- Show button on top menu
+
+1.0.0-beta
+==============
+- Initial release

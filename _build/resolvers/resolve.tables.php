@@ -6,12 +6,12 @@ if ($object->xpdo) {
 
 	switch ($options[xPDOTransport::PACKAGE_ACTION]) {
 		case xPDOTransport::ACTION_INSTALL:
-			$modelPath = $modx->getOption('modupdater_core_path', null, $modx->getOption('core_path') . 'components/modupdater/') . 'model/';
-			$modx->addPackage('modupdater', $modelPath);
+			$modelPath = $modx->getOption('simpleupdater_core_path', null, $modx->getOption('core_path') . 'components/simpleupdater/') . 'model/';
+			$modx->addPackage('simpleupdater', $modelPath);
 
 			$manager = $modx->getManager();
 			$objects = array(
-		//		'modupdaterItem',
+		//		'simpleupdaterItem',
 			);
 			foreach ($objects as $tmp) {
 				$manager->createObjectContainer($tmp);

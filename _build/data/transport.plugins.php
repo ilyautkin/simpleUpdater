@@ -3,14 +3,13 @@
 $plugins = array();
 
 $tmp = array(
-	/*'modUpdater' => array(
-		'file' => 'modupdater',
+	'simpleUpdater' => array(
+		'file' => 'simpleupdater',
 		'description' => '',
 		'events' => array(
-			'OnWebPagePrerender' => array(),
-			'OnDocFormRender' => array()
+			'OnManagerPageBeforeRender' => array()
 		)
-	)*/
+	)
 );
 
 foreach ($tmp as $k => $v) {

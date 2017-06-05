@@ -3,7 +3,7 @@
 $chunks = array();
 
 $tmp = array(
-	/*'tpl.modUpdater.item' => array(
+	/*'tpl.simpleUpdater.item' => array(
 		'file' => 'item',
 		'description' => '',
 	),*/

@@ -3,8 +3,8 @@
 $snippets = array();
 
 $tmp = array(
-	/*'modUpdater' => array(
-		'file' => 'modupdater',
+	/*'simpleUpdater' => array(
+		'file' => 'simpleupdater',
 		'description' => '',
 	),*/
 );
