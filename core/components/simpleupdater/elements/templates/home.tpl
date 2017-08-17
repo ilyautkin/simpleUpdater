@@ -1,0 +1,1 @@
+<div id="simpleupdater-panel-home-div"></div>

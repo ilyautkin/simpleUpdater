@@ -3,14 +3,12 @@
 $menus = array();
 
 $tmp = array(
-    /*
 	'simpleupdater' => array(
 		'description' => 'simpleupdater_menu_desc',
 		'action' => array(
 			'controller' => 'index',
 		),
 	),
-	*/
 );
 
 $i = 0;

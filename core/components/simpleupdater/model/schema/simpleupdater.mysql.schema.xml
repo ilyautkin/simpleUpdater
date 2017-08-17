@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model package="simpleupdater" baseClass="xPDOObject" platform="mysql" defaultEngine="MyISAM" phpdoc-package="simpleupdater"
+	   version="1.1">
+</model>
