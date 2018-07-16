@@ -1,5 +1,9 @@
 Changelog for simpleUpdater.
 
+2.1.2-rc
+==============
+- Restrict the button to the Administrator group
+
 2.1.1-beta
 ==============
 - Restored menu item
