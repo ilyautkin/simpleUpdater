@@ -26,7 +26,7 @@ simpleUpdater.panel.Home = function (config) {
 					html: _('simpleupdater_intro_msg'),
 					cls: 'panel-desc',
 				}, {
-					xtype: 'simpleupdater-export-panel',
+					xtype: 'simpleupdater-updater-panel',
 					cls: 'main-wrapper',
 				}]
 			}]

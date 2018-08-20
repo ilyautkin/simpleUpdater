@@ -16,7 +16,6 @@ abstract class simpleUpdaterMainController extends modExtraManagerController {
 		require_once $corePath . 'model/simpleupdater/simpleupdater.class.php';
 
 		$this->simpleUpdater = new simpleUpdater($this->modx);
-		$this->addCss($this->simpleUpdater->config['cssUrl'] . 'mgr/main.css');
 		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/simpleupdater.js');
 		$this->addHtml('
 		<script type="text/javascript">

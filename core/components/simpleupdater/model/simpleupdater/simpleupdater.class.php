@@ -95,11 +95,6 @@ class simpleUpdater {
 
 		$controller->addLexiconTopic('simpleupdater:default');
 		$controller->addJavascript($jsUrl . 'simpleupdater.js');
-		$controller->addLastJavascript($jsUrl . 'misc/utils.js');
-		$controller->addCss($cssUrl . 'main.css');
-		if (!$modx23) {
-			$controller->addCss($cssUrl . 'font-awesome.min.css');
-		}
     	$controller->addHtml('
 		<script type="text/javascript">
 			MODx.modx23 = ' . $modx23 . ';
@@ -107,7 +102,6 @@ class simpleUpdater {
 			simpleUpdater.config.resID = ' . $resource->id . ';
             simpleUpdater.config.connector_url = "' . $this->config['connectorUrl'] . '";
 		</script>', true);
-		$controller->addLastJavascript($jsUrl . 'widgets/items.windows.js');
 	}
 
 }

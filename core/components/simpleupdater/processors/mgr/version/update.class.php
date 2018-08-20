@@ -11,40 +11,46 @@ class simpleUpdaterUpdateProcessor extends modProcessor {
         $object = array('success' => false);
         $response = $this->modx->runProcessor('mgr/version/check', array(), array('processors_path' => $this->modx->getOption('core_path') . 'components/simpleupdater/processors/'));
         $resObj = $response->getObject();
-        if ($resObj['version']) {
-            $version = str_replace('v','',$resObj['version']);
-            $link = 'https://modx.com/download/direct?id=modx-'.$version.'-advanced.zip';
-            $setupLocation = 'setup/index.php';
-            
-            error_reporting(0);
-            ini_set('display_errors', 0);
-            set_time_limit(0);
-            ini_set('max_execution_time',0);
-            header('Content-Type: text/html; charset=utf-8');
-            
-            if(extension_loaded('xdebug')){
-                ini_set('xdebug.max_nesting_level', 100000);
-            }
-            
-            //run unzip and install
-            ModxInstaller::downloadFile($link, $this->modx->getOption('base_path') . "modx.zip");
-            $zip = new ZipArchive;
-            $res = $zip->open($this->modx->getOption('base_path') ."modx.zip");
-            $zip->extractTo($this->modx->getOption('base_path').'temp' );
-            $zip->close();
-            unlink($this->modx->getOption('base_path').'modx.zip');
-            
-            if ($handle = opendir($this->modx->getOption('base_path').'temp')) {
-            	while (false !== ($name = readdir($handle))) if ($name != "." && $name != "..") $dir = $name;
-            	closedir($handle);
-            }
-            $object['success'] = true;
-            ModxInstaller::copyFolder($this->modx->getOption('base_path').'temp/'.$dir, $this->modx->getOption('base_path'));
-            ModxInstaller::removeFolder($this->modx->getOption('base_path').'temp');
-            unlink(basename(__FILE__));
+        if (!$resObj['version']) {
+            $this->modx->getVersionData();
+            $currentVersion  = $this->modx->version['version'];
+            $currentVersion .= '.'.$this->modx->version['major_version'];
+            $currentVersion .= '.'.$this->modx->version['minor_version'];
+            $currentVersion = 'v'.$currentVersion.'-pl';
+            $resObj = ['version' => $currentVersion];
         }
+        $version = str_replace('v','',$resObj['version']);
+        $link = 'https://modx.com/download/direct?id=modx-'.$version.'-advanced.zip';
+        $setupLocation = 'setup/index.php';
+        
+        error_reporting(0);
+        ini_set('display_errors', 0);
+        set_time_limit(0);
+        ini_set('max_execution_time',0);
+        header('Content-Type: text/html; charset=utf-8');
+        
+        if(extension_loaded('xdebug')){
+            ini_set('xdebug.max_nesting_level', 100000);
+        }
+        
+        //run unzip and install
+        ModxInstaller::downloadFile($link, $this->modx->getOption('base_path') . "modx.zip");
+        $zip = new ZipArchive;
+        $res = $zip->open($this->modx->getOption('base_path') ."modx.zip");
+        $zip->extractTo($this->modx->getOption('base_path').'temp' );
+        $zip->close();
+        unlink($this->modx->getOption('base_path').'modx.zip');
+        
+        if ($handle = opendir($this->modx->getOption('base_path').'temp')) {
+        	while (false !== ($name = readdir($handle))) if ($name != "." && $name != "..") $dir = $name;
+        	closedir($handle);
+        }
+        $object['success'] = true;
+        ModxInstaller::copyFolder($this->modx->getOption('base_path').'temp/'.$dir, $this->modx->getOption('base_path'));
+        ModxInstaller::removeFolder($this->modx->getOption('base_path').'temp');
+        unlink(basename(__FILE__));
         if (!$object['success']) {
-            $o = $this->failure('test', array());
+            $o = $this->failure('Error', array());
         } else {
             $o = $this->success('', array());
         }

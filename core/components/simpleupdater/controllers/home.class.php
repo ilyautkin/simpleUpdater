@@ -28,12 +28,7 @@ class simpleUpdaterHomeManagerController extends simpleUpdaterMainController {
 	 * @return void
 	 */
 	public function loadCustomCssJs() {
-		$this->addCss($this->simpleUpdater->config['cssUrl'] . 'mgr/main.css');
-		//$this->addCss($this->simpleUpdater->config['cssUrl'] . 'mgr/bootstrap.buttons.css');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/misc/utils.js');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/export.panel.js');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/items.windows.js');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/import.panel.js');
+		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/updater.panel.js');
 		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/home.panel.js');
 		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/sections/home.js');
 		$this->addHtml('<script type="text/javascript">
