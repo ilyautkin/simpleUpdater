@@ -76,7 +76,7 @@ Ext.onReady(function() {
     		firstLi = usermenuUl.firstChild,
     		simpleUpdaterLi = document.createElement("LI");
     
-    	simpleUpdaterLi.innerHTML = "<span id=\"simpleupdater-link\" class=\"x-btn x-btn-small primary-button\" onclick=\"updateMODX()\" style=\"margin-top: 10px;\">"+_('simpleupdater_update')+"</span>";
+    	simpleUpdaterLi.innerHTML = "<span id=\"simpleupdater-link\" class=\"x-btn x-btn-small primary-button\" onclick=\"updateMODX()\" style=\"margin: 10px;\">"+_('simpleupdater_update')+"</span>";
     	usermenuUl.insertBefore(simpleUpdaterLi, firstLi);
     }
 });
