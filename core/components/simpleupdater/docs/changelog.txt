@@ -1,5 +1,9 @@
 Changelog for simpleUpdater.
 
+2.1.4-rc
+==============
+- Fix button margin
+
 2.1.3-rc
 ==============
 - Removed unnecessary prices processors
