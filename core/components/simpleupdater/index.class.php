@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class simpleUpdaterMainController
+ * Class simpleUpdaterIndexManagerController
  */
-abstract class simpleUpdaterMainController extends modExtraManagerController {
+class simpleUpdaterIndexManagerController extends modExtraManagerController {
 	/** @var simpleUpdater $simpleUpdater */
 	public $simpleUpdater;
 
@@ -42,18 +42,35 @@ abstract class simpleUpdaterMainController extends modExtraManagerController {
 	public function checkPermissions() {
 		return true;
 	}
-}
 
 
-/**
- * Class IndexManagerController
- */
-class IndexManagerController extends simpleUpdaterMainController {
+	/**
+	 * @return null|string
+	 */
+	public function getPageTitle() {
+		return $this->modx->lexicon('simpleupdater');
+	}
+
+
+	/**
+	 * @return void
+	 */
+	public function loadCustomCssJs() {
+		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/updater.panel.js');
+		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/home.panel.js');
+		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/sections/home.js');
+		$this->addHtml('<script type="text/javascript">
+		Ext.onReady(function() {
+			MODx.load({ xtype: "simpleupdater-page-home"});
+		});
+		</script>');
+	}
+
 
 	/**
 	 * @return string
 	 */
-	public static function getDefaultController() {
-		return 'home';
+	public function getTemplateFile() {
+		return $this->simpleUpdater->config['templatesPath'] . 'home.tpl';
 	}
 }

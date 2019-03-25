@@ -70,14 +70,6 @@ if (defined('BUILD_MENU_UPDATE')) {
 		xPDOTransport::PRESERVE_KEYS => true,
 		xPDOTransport::UPDATE_OBJECT => BUILD_MENU_UPDATE,
 		xPDOTransport::UNIQUE_KEY => 'text',
-		xPDOTransport::RELATED_OBJECTS => true,
-		xPDOTransport::RELATED_OBJECT_ATTRIBUTES => array(
-			'Action' => array(
-				xPDOTransport::PRESERVE_KEYS => false,
-				xPDOTransport::UPDATE_OBJECT => BUILD_ACTION_UPDATE,
-				xPDOTransport::UNIQUE_KEY => array('namespace', 'controller'),
-			),
-		),
 	);
 	if (is_array($menus)) {
 		foreach ($menus as $menu) {

@@ -1,5 +1,9 @@
 Changelog for simpleUpdater.
 
+2.1.5-rc
+==============
+- Fixed modAction deprecated error
+
 2.1.4-rc
 ==============
 - Fix button margin
