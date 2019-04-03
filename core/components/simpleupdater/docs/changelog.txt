@@ -1,5 +1,9 @@
 Changelog for simpleUpdater.
 
+2.1.6-rc2
+==============
+- Add menu resolver for fix
+
 2.1.6-rc
 ==============
 - Fix old menu item
