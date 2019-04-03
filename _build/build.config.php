@@ -4,7 +4,7 @@
 define('PKG_NAME', 'simpleUpdater');
 define('PKG_NAME_LOWER', strtolower(PKG_NAME));
 
-define('PKG_VERSION', '2.1.5');
+define('PKG_VERSION', '2.1.6');
 define('PKG_RELEASE', 'rc');
 define('PKG_AUTO_INSTALL', true);
 define('PKG_NAMESPACE_PATH', '{core_path}components/' . PKG_NAME_LOWER . '/');
@@ -37,3 +37,7 @@ define('BUILD_ACTION_UPDATE', false);
 define('BUILD_PLUGIN_UPDATE', true);
 define('BUILD_EVENT_UPDATE', true);
 define('BUILD_PLUGIN_STATIC', false);
+
+$BUILD_RESOLVERS = array(
+	'fixmenu', // Новый резолвер
+);
