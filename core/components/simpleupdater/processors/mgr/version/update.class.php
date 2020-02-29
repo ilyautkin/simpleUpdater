@@ -1,15 +1,28 @@
 <?php
 
-class simpleUpdaterUpdateProcessor extends modProcessor {
+class simpleUpdaterUpdateProcessor extends modProcessor
+{
     public $languageTopics = array('simpleupdater');
 
-    public function checkPermissions() {
-        return $this->modx->hasPermission('file_create');
+    public function checkPermissions()
+    {
+        return $this->modx->user->isMember('Administrator');
     }
-    
-    public function process() {
-        $object = array('success' => false);
-        $response = $this->modx->runProcessor('mgr/version/check', array(), array('processors_path' => $this->modx->getOption('core_path') . 'components/simpleupdater/processors/'));
+
+    public function process()
+    {
+        $corePath = $this->modx->getOption('simpleupdater.core_path', null, $this->modx->getOption('core_path') . 'components/simpleupdater/');
+        /** @var simpleUpdater $simpleupdater */
+        $simpleupdater = $this->modx->getService('simpleupdater', 'simpleUpdater', $corePath . 'model/simpleupdater/', array(
+            'core_path' => $corePath
+        ));
+
+        $object = array(
+            'success' => false
+        );
+        $response = $this->modx->runProcessor('mgr/version/check', array(), array(
+            'processors_path' => $simpleupdater->getOption('processorsPath')
+        ));
         $resObj = $response->getObject();
         if (!$resObj['version']) {
             $this->modx->getVersionData();
@@ -17,12 +30,11 @@ class simpleUpdaterUpdateProcessor extends modProcessor {
             $currentVersion .= '.'.$this->modx->version['major_version'];
             $currentVersion .= '.'.$this->modx->version['minor_version'];
             $currentVersion = 'v'.$currentVersion.'-pl';
-            $resObj = ['version' => $currentVersion];
+            $resObj = array('version' => $currentVersion);
         }
         $version = str_replace('v','',$resObj['version']);
         $link = 'https://modx.com/download/direct?id=modx-'.$version.'-advanced.zip';
-        $setupLocation = 'setup/index.php';
-        
+
         error_reporting(0);
         ini_set('display_errors', 0);
         set_time_limit(0);
@@ -59,66 +71,71 @@ class simpleUpdaterUpdateProcessor extends modProcessor {
 
 }
 
-class ModxInstaller{
-	static public function downloadFile ($url, $path) {
-		$newfname = $path;
-		try {
-			$file = fopen ($url, "rb");
-			if ($file) {
-				$newf = fopen ($newfname, "wb");
-				if ($newf)
-				while(!feof($file)) {
-					fwrite($newf, fread($file, 1024 * 8 ), 1024 * 8 );
-				}
-			}			
-		} catch(Exception $e) {
-			$this->errors[] = array('ERROR:Download',$e->getMessage());
-			return false;
-		}
-		if ($file) fclose($file);
-		if ($newf) fclose($newf);
-		return true;
-	}	
-	static public function removeFolder($path){
-		$dir = realpath($path);
-		if ( !is_dir($dir)) return;
-		$it = new RecursiveDirectoryIterator($dir);
-		$files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
-		foreach($files as $file) {
-			if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-				continue;
-			}
-			if ($file->isDir()){
-				rmdir($file->getRealPath());
-			} else {
-				unlink($file->getRealPath());
-			}
-		}
-		rmdir($dir);
-	}
-	static public function copyFolder($src, $dest) {
-		$path = realpath($src);
-		$dest = realpath($dest);
-		$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
-		foreach($objects as $name => $object)
-		{			
-			$startsAt = substr(dirname($name), strlen($path));
-			self::mmkDir($dest.$startsAt);
-			if ( $object->isDir() ) {
-				self::mmkDir($dest.substr($name, strlen($path)));
-			}
+class ModxInstaller
+{
+    static public function downloadFile($url, $path)
+    {
+        $newfname = $path;
+        try {
+            $file = fopen($url, "rb");
+            if ($file) {
+                $newf = fopen($newfname, "wb");
+                if ($newf)
+                    while (!feof($file)) {
+                        fwrite($newf, fread($file, 1024 * 8), 1024 * 8);
+                    }
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+        if ($file) fclose($file);
+        if ($newf) fclose($newf);
+        return true;
+    }
 
-			if(is_writable($dest.$startsAt) and $object->isFile())
-			{
-				copy((string)$name, $dest.$startsAt.DIRECTORY_SEPARATOR.basename($name));
-			}
-		}
-	}
-	static public function mmkDir($folder, $perm=0777) {
-		if(!is_dir($folder)) {
-			mkdir($folder, $perm);
-		}
-	}
+    static public function removeFolder($path)
+    {
+        $dir = realpath($path);
+        if (!is_dir($dir)) return;
+        $it = new RecursiveDirectoryIterator($dir);
+        $files = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($files as $file) {
+            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+                continue;
+            }
+            if ($file->isDir()) {
+                rmdir($file->getRealPath());
+            } else {
+                unlink($file->getRealPath());
+            }
+        }
+        rmdir($dir);
+    }
+
+    static public function copyFolder($src, $dest)
+    {
+        $path = realpath($src);
+        $dest = realpath($dest);
+        $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
+        foreach ($objects as $name => $object) {
+            $startsAt = substr(dirname($name), strlen($path));
+            self::mmkDir($dest . $startsAt);
+            if ($object->isDir()) {
+                self::mmkDir($dest . substr($name, strlen($path)));
+            }
+
+            if (is_writable($dest . $startsAt) and $object->isFile()) {
+                copy((string)$name, $dest . $startsAt . DIRECTORY_SEPARATOR . basename($name));
+            }
+        }
+    }
+
+    static public function mmkDir($folder, $perm = 0777)
+    {
+        if (!is_dir($folder)) {
+            mkdir($folder, $perm);
+        }
+    }
 }
 
 return 'simpleUpdaterUpdateProcessor';

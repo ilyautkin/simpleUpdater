@@ -1,17 +1,26 @@
 <?php
 
-class simpleUpdaterCheckProcessor extends modProcessor {
+class simpleUpdaterCheckProcessor extends modProcessor
+{
     public $languageTopics = array('simpleupdater');
 
-    public function checkPermissions() {
-        return $this->modx->hasPermission('file_create');
+    public function checkPermissions()
+    {
+        return $this->modx->user->isMember('Administrator');
     }
-    
-    public function process() {
+
+    public function process()
+    {
+        $corePath = $this->modx->getOption('simpleupdater.core_path', null, $this->modx->getOption('core_path') . 'components/simpleupdater/');
+        /** @var simpleUpdater $simpleupdater */
+        $simpleupdater = $this->modx->getService('simpleupdater', 'simpleUpdater', $corePath . 'model/simpleupdater/', array(
+            'core_path' => $corePath
+        ));
+
         $object = array(
             'success' => true,
             'show_button' => false,
-            'connector_url' => $this->modx->getOption('assets_url') . 'components/simpleupdater/connector.php'
+            'connector_url' => $simpleupdater->getOption('assets_url') . 'components/simpleupdater/connector.php'
         );
         $ttl = 6 * 60 * 60;
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
@@ -20,10 +29,8 @@ class simpleUpdaterCheckProcessor extends modProcessor {
         $topic = '/simpleUpdater/';
         $registry->subscribe($topic . 'version');
         $maxVersion = array_shift($registry->read(array('poll_limit' => 1, 'remove_read' => false)));
-        if (empty($maxVersion)) {
-            $context = stream_context_create(array('http' => array('method' => 'GET', 'header' => 'User-Agent: MODX simpleUpdater')));
-            $contents = file_get_contents('https://api.github.com/repos/modxcms/revolution/tags', false, $context);
-            $contents = utf8_encode($contents);
+        if (empty($maxVersion) && false) {
+            $contents = $simpleupdater->requestUrl('https://api.github.com/repos/modxcms/revolution/tags', true);
             $contents = $this->modx->fromJSON($contents);
             if (empty($contents)) {
                 $object['success'] = false;
@@ -43,25 +50,25 @@ class simpleUpdaterCheckProcessor extends modProcessor {
                         $maxVersion = $version['name'];
                     }
                 }
-                $changelog = trim(file_get_contents('https://raw.githubusercontent.com/modxcms/revolution/'.$maxVersion.'/core/docs/changelog.txt'));
+                $changelog = trim($simpleupdater->requestUrl('https://raw.githubusercontent.com/modxcms/revolution/' . $maxVersion . '/core/docs/changelog.txt'));
                 $registry->subscribe($topic);
                 $registry->send(
-                	$topic,
-                	array('version' => $maxVersion, 'changelog' => $changelog),
-                	array('ttl' => $ttl)
+                    $topic,
+                    array('version' => $maxVersion, 'changelog' => $changelog),
+                    array('ttl' => $ttl)
                 );
             }
         }
         $this->modx->getVersionData();
-        $currentVersion  = $this->modx->version['version'];
-        $currentVersion .= '.'.$this->modx->version['major_version'];
-        $currentVersion .= '.'.$this->modx->version['minor_version'];
-        $currentVersion = 'v'.$currentVersion.'-pl';
+        $currentVersion = $this->modx->version['version'];
+        $currentVersion .= '.' . $this->modx->version['major_version'];
+        $currentVersion .= '.' . $this->modx->version['minor_version'];
+        $currentVersion = 'v' . $currentVersion . '-'. $this->modx->version['patch_level'];
         if (version_compare($currentVersion, $maxVersion, '<')) {
             $registry->subscribe($topic . 'changelog');
             $changelog = array_shift($registry->read(array('poll_limit' => 1, 'remove_read' => false)));
             if (empty($changelog)) {
-                $changelog = trim(file_get_contents('https://raw.githubusercontent.com/modxcms/revolution/'.$maxVersion.'/core/docs/changelog.txt'));
+                $changelog = trim(file_get_contents('https://raw.githubusercontent.com/modxcms/revolution/' . $maxVersion . '/core/docs/changelog.txt'));
             }
             $object['show_button'] = true;
             $object['version'] = $maxVersion;

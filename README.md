@@ -1,3 +1,3 @@
 ## simpleUpdater
 
-Кнопка обновления для MODX
+Update Button for MODX

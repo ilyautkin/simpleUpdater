@@ -1,107 +1,137 @@
 <?php
+/**
+ * simpleUpdater classfile
+ *
+ * Copyright 2015-2020 by Ilya Utkin <ilyautkin@mail.ru>
+ *
+ * @package simpleupdater
+ * @subpackage classfile
+ */
 
 /**
- * The base class for simpleUpdater.
+ * class simpleUpdater
  */
-class simpleUpdater {
-	/* @var modX $modx */
-	public $modx;
+class simpleUpdater
+{
+    /**
+     * A reference to the modX instance
+     * @var modX $modx
+     */
+    public $modx;
 
+    /**
+     * The namespace
+     * @var string $namespace
+     */
+    public $namespace = 'simpleupdater';
 
-	/**
-	 * @param modX $modx
-	 * @param array $config
-	 */
-	function __construct(modX &$modx, array $config = array()) {
-		$this->modx =& $modx;
+    /**
+     * The version
+     * @var string $version
+     */
+    public $version = '2.2.0';
 
-		$corePath = $this->modx->getOption('simpleupdater_core_path', $config, $this->modx->getOption('core_path') . 'components/simpleupdater/');
-		$assetsUrl = $this->modx->getOption('simpleupdater_assets_url', $config, $this->modx->getOption('assets_url') . 'components/simpleupdater/');
-		$connectorUrl = $assetsUrl . 'connector.php';
+    /**
+     * The class config
+     * @var array $config
+     */
+    public $config = array();
 
-		$this->config = array_merge(array(
-			'assetsUrl' => $assetsUrl,
-			'cssUrl' => $assetsUrl . 'css/',
-			'jsUrl' => $assetsUrl . 'js/',
-			'imagesUrl' => $assetsUrl . 'images/',
-			'connectorUrl' => $connectorUrl,
+    /**
+     * @param modX $modx
+     * @param array $config
+     */
+    function __construct(modX &$modx, array $config = array())
+    {
+        $this->modx =& $modx;
+        $this->namespace = $this->getOption('namespace', $config, $this->namespace);
 
-			'corePath' => $corePath,
-			'modelPath' => $corePath . 'model/',
-			'chunksPath' => $corePath . 'elements/chunks/',
-			'templatesPath' => $corePath . 'elements/templates/',
-			'chunkSuffix' => '.chunk.tpl',
-			'snippetsPath' => $corePath . 'elements/snippets/',
-			'processorsPath' => $corePath . 'processors/'
-		), $config);
+        $corePath = $this->modx->getOption('simpleupdater.core_path', $config, $this->modx->getOption('core_path') . 'components/simpleupdater/');
+        $assetsUrl = $this->modx->getOption('simpleupdater.assets_url', $config, $this->modx->getOption('assets_url') . 'components/simpleupdater/');
 
-		$this->modx->addPackage('simpleupdater', $this->config['modelPath']);
-		$this->modx->lexicon->load('simpleupdater:default');
-	}
-    
-    public function findResource($url) {
-        $urlArr = parse_url($url);
-        if (substr($urlArr['path'],0,1) == '/') {
-            $urlArr['path'] = substr($urlArr['path'],1);
-        }
-        $site_url = $urlArr['scheme'].'://'.$urlArr['host'].'/';
-        if ($ctxObject = $this->modx->getObject('modContextSetting', array('key' => 'site_url', 'value' => $site_url))) {
-            $ctx = $ctxObject->get('context_key');
-            if ($url == $site_url) {
-                if ($site_start = $this->modx->getObject('modContextSetting', array('context_key' => $ctx, 'key' => 'site_start'))) {
-                    $resourceId = $site_start->get('value');
-                }
-            }
-        } else {
-            $ctx = 'web';
-            if ($url == $site_url) {
-                if ($site_url == $this->modx->getOption('site_url')) {
-                    $resourceId = $this->modx->getOption('site_start');
-                }
-            }
-        }
-        if (!$resourceId) {
-            $resourceId = $this->modx->findResource($urlArr['path'], $ctx);
-        }
-        if ($resourceId === false) {
-            $resourceId = 0;
-        }
-        return $resourceId;
+        $this->config = array_merge(array(
+            'namespace' => $this->namespace,
+            'version' => $this->version,
+            'assetsUrl' => $assetsUrl,
+            'cssUrl' => $assetsUrl . 'css/',
+            'jsUrl' => $assetsUrl . 'js/',
+            'imagesUrl' => $assetsUrl . 'images/',
+            'connectorUrl' => $assetsUrl . 'connector.php',
+
+            'corePath' => $corePath,
+            'modelPath' => $corePath . 'model/',
+            'chunksPath' => $corePath . 'elements/chunks/',
+            'templatesPath' => $corePath . 'elements/templates/',
+            'chunkSuffix' => '.chunk.tpl',
+            'snippetsPath' => $corePath . 'elements/snippets/',
+            'processorsPath' => $corePath . 'processors/'
+        ), $config);
+
+        $this->modx->lexicon->load($this->namespace . ':default');
     }
 
     /**
-	 * Compares MODX version
-	 *
-	 * @param string $version
-	 * @param string $dir
-	 *
-	 * @return bool
-	 */
-	public function systemVersion($version = '2.3.0', $dir = '>=') {
-		$this->modx->getVersionData();
-		return !empty($this->modx->version) && version_compare($this->modx->version['full_version'], $version, $dir);
-	}
-
+     * Get a local configuration option or a namespaced system setting by key.
+     *
+     * @param string $key The option key to search for.
+     * @param array $options An array of options that override local options.
+     * @param mixed $default The default value returned if the option is not found locally or as a
+     * namespaced system setting; by default this value is null.
+     * @return mixed The option value or the default value specified.
+     */
+    public function getOption($key, $options = array(), $default = null)
+    {
+        $option = $default;
+        if (!empty($key) && is_string($key)) {
+            if ($options != null && array_key_exists($key, $options)) {
+                $option = $options[$key];
+            } elseif (array_key_exists($key, $this->config)) {
+                $option = $this->config[$key];
+            } elseif (array_key_exists("{$this->namespace}.{$key}", $this->modx->config)) {
+                $option = $this->modx->getOption("{$this->namespace}.{$key}");
+            }
+        }
+        return $option;
+    }
 
     /**
-	 * @param modManagerController $controller
-	 * @param modResource $resource
-	 */
-	public function loadManagerFiles(modManagerController $controller, modResource $resource) {
-		$modx23 = (int)$this->systemVersion();
-		$cssUrl = $this->config['cssUrl'] . 'mgr/';
-		$jsUrl = $this->config['jsUrl'] . 'mgr/';
-		$properties = $resource->getProperties('simpleupdater');
+     * Request the content of an url with a possible gitHub token
+     *
+     * @param $url
+     * @param bool $addToken
+     * @return bool|false|string
+     */
+    public function requestUrl($url, $addToken = false)
+    {
+        $httpHandler = $this->getOption('http_handler');
+        $githubUser = $this->getOption('github_user');
+        $githubToken = $this->getOption('github_token');
+        $url = ($githubUser && $githubToken && $addToken) ? str_replace('https://', 'https://' . $githubUser . ':' . $githubToken, $url) : $url;
 
-		$controller->addLexiconTopic('simpleupdater:default');
-		$controller->addJavascript($jsUrl . 'simpleupdater.js');
-    	$controller->addHtml('
-		<script type="text/javascript">
-			MODx.modx23 = ' . $modx23 . ';
-			simpleUpdater.config = ' . $this->modx->toJSON($this->config) . ';
-			simpleUpdater.config.resID = ' . $resource->id . ';
-            simpleUpdater.config.connector_url = "' . $this->config['connectorUrl'] . '";
-		</script>', true);
-	}
+        switch ($httpHandler) {
+            case 'curl':
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'MODX simpleUpdater');
+                $contents = curl_exec($ch);
+                curl_close($ch);
+                $contents = utf8_encode($contents);
 
+                break;
+            case 'file_get_contents':
+            default:
+                $context = stream_context_create(array(
+                    'http' => array(
+                        'method' => 'GET',
+                        'header' => 'User-Agent: MODX simpleUpdater'
+                    )
+                ));
+                $contents = file_get_contents($url, false, $context);
+                $contents = utf8_encode($contents);
+
+                break;
+        }
+        return $contents;
+    }
 }
