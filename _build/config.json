@@ -1,0 +1,44 @@
+{
+  "name": "simpleUpdater",
+  "lowCaseName": "simpleupdater",
+  "description": "Update Button for MODX.",
+  "author": "Ilya Utkin",
+  "version": "2.2.0",
+  "package": {
+    "menus": [
+      {
+        "text": "simpleupdater_menu",
+        "description": "simpleupdater_menu_desc",
+        "action": "home"
+      }
+    ],
+    "elements": {
+      "plugins": [
+        {
+          "name": "simpleUpdater",
+          "file": "plugin.simpleupdater.php",
+          "events": [
+            "OnManagerPageBeforeRender"
+          ]
+        }
+      ]
+    },
+    "systemSettings": [
+      {
+        "key": "http_handler",
+        "area": "system",
+        "value": "file_get_contents"
+      },
+      {
+        "key": "github_user",
+        "area": "system",
+        "value": ""
+      },
+      {
+        "key": "github_token",
+        "area": "system",
+        "value": ""
+      }
+    ]
+  }
+}

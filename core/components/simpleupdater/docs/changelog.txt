@@ -1,5 +1,14 @@
 Changelog for simpleUpdater.
 
+2.2.0
+==============
+- Refactored and normalized the code
+- Possible use of cURL as HTTP Handler get the latest MODX
+- Use an GitHub access token to get the latest MODX version without exceeding the GitHub API Rate Limit
+- Show the content of the custom manager page only for members of the Administrator group
+- Show the update button in the custom manager page, only if an update is available
+- Show the version info and the changelog in the custom manager page, if an update is available
+
 2.1.6-rc2
 ==============
 - Add menu resolver for fix

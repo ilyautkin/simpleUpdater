@@ -1,18 +1,25 @@
 <?php
-/** @noinspection PhpIncludeInspection */
-require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/config.core.php';
-/** @noinspection PhpIncludeInspection */
-require_once MODX_CORE_PATH . 'config/' . MODX_CONFIG_KEY . '.inc.php';
-/** @noinspection PhpIncludeInspection */
-require_once MODX_CONNECTORS_PATH . 'index.php';
-/** @var simpleUpdater $simpleUpdater */
-$simpleUpdater = $modx->getService('simpleupdater', 'simpleUpdater', $modx->getOption('simpleupdater_core_path', null, $modx->getOption('core_path') . 'components/simpleupdater/') . 'model/simpleupdater/');
-$modx->lexicon->load('simpleupdater:default');
+/**
+ * simpleUpdater connector
+ *
+ * @package simpleupdater
+ * @subpackage connector
+ *
+ * @var modX $modx
+ */
 
-// handle request
-$corePath = $modx->getOption('simpleupdater_core_path', null, $modx->getOption('core_path') . 'components/simpleupdater/');
-$path = $modx->getOption('processorsPath', $simpleUpdater->config, $corePath . 'processors/');
+require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/config.core.php';
+require_once MODX_CORE_PATH . 'config/' . MODX_CONFIG_KEY . '.inc.php';
+require_once MODX_CONNECTORS_PATH . 'index.php';
+
+$corePath = $modx->getOption('simpleupdater.core_path', null, $modx->getOption('core_path') . 'components/simpleupdater/');
+/** @var simpleUpdater $simpleUpdater */
+$simpleUpdater = $modx->getService('simpleupdater', 'simpleUpdater', $corePath . 'model/simpleupdater/', array(
+    'core_path' => $corePath
+));
+
+// Handle request
 $modx->request->handleRequest(array(
-	'processors_path' => $path,
-	'location' => '',
+    'processors_path' => $simpleUpdater->getOption('processorsPath'),
+    'location' => ''
 ));

@@ -1,48 +1,61 @@
 <?php
-
 /**
  * The home manager controller for simpleUpdater.
  *
+ * @package simpleupdater
+ * @subpackage controller
  */
-class simpleUpdaterHomeManagerController extends simpleUpdaterMainController {
-	/* @var simpleUpdater $simpleUpdater */
-	public $simpleUpdater;
 
+/**
+ * Class simpleUpdaterHomeManagerController
+ */
+class simpleUpdaterHomeManagerController extends modExtraManagerController
+{
+    /* @var simpleUpdater $simpleUpdater */
+    public $simpleUpdater;
 
-	/**
-	 * @param array $scriptProperties
-	 */
-	public function process(array $scriptProperties = array()) {
-	}
+    public function initialize()
+    {
+        $corePath = $this->modx->getOption('simpleupdater.core_path', null, $this->modx->getOption('core_path') . 'components/simpleupdater/');
+        $this->simpleUpdater = $this->modx->getService('simpleupdater', 'simpleUpdater', $corePath . 'model/simpleupdater/', array(
+            'core_path' => $corePath
+        ));
 
+        parent::initialize();
+    }
 
-	/**
-	 * @return null|string
-	 */
-	public function getPageTitle() {
-		return $this->modx->lexicon('simpleupdater');
-	}
-
-
-	/**
-	 * @return void
-	 */
-	public function loadCustomCssJs() {
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/updater.panel.js');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/widgets/home.panel.js');
-		$this->addJavascript($this->simpleUpdater->config['jsUrl'] . 'mgr/sections/home.js');
-		$this->addHtml('<script type="text/javascript">
+    public function loadCustomCssJs()
+    {
+        if ($this->modx->user->isMember('Administrator')) {
+            $this->addJavascript($this->simpleUpdater->getOption('jsUrl') . 'mgr/simpleupdater.js?v=' . $this->simpleUpdater->version);
+            $this->addJavascript($this->simpleUpdater->getOption('jsUrl') . 'mgr/widgets/updater.panel.js');
+            $this->addJavascript($this->simpleUpdater->getOption('jsUrl') . 'mgr/widgets/home.panel.js');
+            $this->addJavascript($this->simpleUpdater->getOption('jsUrl') . 'mgr/sections/home.js');
+            $this->addHtml('<script type="text/javascript">
 		Ext.onReady(function() {
-			MODx.load({ xtype: "simpleupdater-page-home"});
+			simpleUpdater.config = ' . json_encode($this->simpleUpdater->config, JSON_PRETTY_PRINT) . ';
+	        MODx.load({xtype: "simpleupdater-page-home"});
 		});
 		</script>');
-	}
+        }
+    }
 
+    public function getLanguageTopics()
+    {
+        return array('simpleupdater:default');
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getTemplateFile() {
-		return $this->simpleUpdater->config['templatesPath'] . 'home.tpl';
-	}
+    public function process(array $scriptProperties = array())
+    {
+    }
+
+    public function getPageTitle()
+    {
+        return $this->modx->lexicon('simpleupdater');
+    }
+
+    public function getTemplateFile()
+    {
+        return $this->simpleUpdater->getOption('templatesPath') . 'home.tpl';
+    }
 }
