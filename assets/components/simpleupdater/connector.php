@@ -2,7 +2,7 @@
 /**
  * simpleUpdater connector
  *
- * @package cursus
+ * @package simpleupdater
  * @subpackage connector
  *
  * @var modX $modx
