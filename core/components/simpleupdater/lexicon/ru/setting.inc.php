@@ -1,7 +1,7 @@
 <?php
 $_lang['setting_simpleupdater.github_token'] = 'GitHub Token';
-$_lang['setting_simpleupdater.github_token_desc'] = '<a href="https://github.com/settings/tokens">GitHub Personal access token</a> to retrieve the MODX version without exceed the GitHub API Rate Limit';
+$_lang['setting_simpleupdater.github_token_desc'] = 'GitHub Personal access token, чтобы узнать последнюю версию MODX, не боясь исчерпать GitHub API Rate Limit: https://github.com/settings/tokens';
 $_lang['setting_simpleupdater.github_user'] = 'GitHub User';
-$_lang['setting_simpleupdater.github_user_desc'] = 'Github user to retrieve the MODX version without exceeding the GitHub API Rate Limit';
+$_lang['setting_simpleupdater.github_user_desc'] = 'Пользователь GitHub';
 $_lang['setting_simpleupdater.http_handler'] = 'HTTP Handler';
-$_lang['setting_simpleupdater.http_handler_desc'] = 'HTTP handler type for retrieving the MODX version information (file_get_contents or curl)';
+$_lang['setting_simpleupdater.http_handler_desc'] = 'Метод получения информации о версии MODX (file_get_contents или curl)';

@@ -21,6 +21,7 @@ simpleUpdater.panel.Updater = function (config) {
                     listeners: {
                         success: {
                             fn: function (response) {
+                                Ext.getCmp(config.id + '-loading').hide();
                                 if (response.object.show_button) {
                                     Ext.get(config.id + '-version_info').dom.innerHTML = response.object.changelog;
                                     Ext.getCmp(config.id + '-update-available').show().setTitle('MODX Revolution ' + response.object.version);
@@ -34,18 +35,25 @@ simpleUpdater.panel.Updater = function (config) {
             }
         },
         items: [{
+            html: '<div class="loading-indicator">' + _('loading') + '</div>',
+            id: config.id + '-loading',
             anchor: '100%',
+            autoHeight: true,
+            cls: 'panel-desc',
+        }, {
+            anchor: '99%',
             layout: 'anchor',
             id: config.id + '-update-available',
             hidden: true,
-            title: 'TEST',
+            title: 'MODX Revolution',
+            cls: 'panel-desc',
             items: [{
                 xtype: 'textarea',
                 id: config.id + '-version_info',
                 anchor: '100%',
                 style: {
                     height: '400px',
-                    marginBottom: '10px'
+                    marginBottom: '10px',
                 },
                 readOnly: true,
                 focusClass: ''
@@ -69,6 +77,7 @@ simpleUpdater.panel.Updater = function (config) {
             anchor: '100%',
             autoHeight: true,
             hidden: true,
+            cls: 'panel-desc',
         }, {
             html: '<div class="loading-indicator">' + _('loading') + '</div>',
             id: config.id + '-update-log',
@@ -82,6 +91,7 @@ simpleUpdater.panel.Updater = function (config) {
 };
 Ext.extend(simpleUpdater.panel.Updater, MODx.FormPanel, {
     _startUpdate: function () {
+        Ext.getCmp(this.config.id + '-update-available').hide()
         Ext.getCmp(this.config.id + '-update-log').show();
         Ext.getCmp(this.config.id).form.submit({
             url: simpleUpdater.config.connectorUrl,

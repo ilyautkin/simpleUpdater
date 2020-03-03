@@ -15,35 +15,35 @@ simpleUpdater.panel.Home = function (config) {
                 autoHeight: true
             },
             border: true,
+            items: [{
+                xtype: 'modx-tabs',
+                autoScroll: true,
+                deferredRender: false,
+                forceLayout: true,
+                defaults: {
+                    layout: 'form',
+                    autoHeight: true,
+                    hideMode: 'offsets'
+                },
                 items: [{
-                    xtype: 'modx-tabs',
-                    autoScroll: true,
-                    deferredRender: false,
-                    forceLayout: true,
-                    defaults: {
-                        layout: 'form',
-                        autoHeight: true,
-                        hideMode: 'offsets'
-                    },
+                    title: _('update'),
                     items: [{
-                        title: _('update'),
+                        html: '<p>' + _('simpleupdater_intro_msg') + '</p>',
+                        border: false,
+                        cls: 'panel-desc'
+                    }, {
+                        layout: 'form',
+                        cls: 'x-form-label-left main-wrapper',
+                        defaults: {
+                            autoHeight: true
+                        },
+                        border: true,
                         items: [{
-                            html: '<p>' + _('simpleupdater_intro_msg') + '</p>',
-                            border: false,
-                            cls: 'panel-desc'
-                        }, {
-                            layout: 'form',
-                            cls: 'x-form-label-left main-wrapper',
-                            defaults: {
-                                autoHeight: true
-                            },
-                            border: true,
-                            items: [{
-                                xtype: 'simpleupdater-updater-panel'
-                            }]
+                            xtype: 'simpleupdater-updater-panel'
                         }]
                     }]
                 }]
+            }]
         }]
     });
     simpleUpdater.panel.Home.superclass.constructor.call(this, config);

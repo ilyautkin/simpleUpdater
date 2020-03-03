@@ -7,9 +7,9 @@
  */
 
 /**
- * Class simpleUpdaterHomeManagerController
+ * Class simpleUpdaterIndexManagerController
  */
-class simpleUpdaterHomeManagerController extends modExtraManagerController
+class simpleUpdaterIndexManagerController extends modExtraManagerController
 {
     /* @var simpleUpdater $simpleUpdater */
     public $simpleUpdater;

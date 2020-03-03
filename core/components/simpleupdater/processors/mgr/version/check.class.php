@@ -29,7 +29,7 @@ class simpleUpdaterCheckProcessor extends modProcessor
         $topic = '/simpleUpdater/';
         $registry->subscribe($topic . 'version');
         $maxVersion = array_shift($registry->read(array('poll_limit' => 1, 'remove_read' => false)));
-        if (empty($maxVersion) && false) {
+        if (empty($maxVersion)) {
             $contents = $simpleupdater->requestUrl('https://api.github.com/repos/modxcms/revolution/tags', true);
             $contents = $this->modx->fromJSON($contents);
             if (empty($contents)) {
