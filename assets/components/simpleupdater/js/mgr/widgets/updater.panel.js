@@ -41,7 +41,7 @@ simpleUpdater.panel.Updater = function (config) {
             autoHeight: true,
             cls: 'panel-desc',
         }, {
-            anchor: '99%',
+            anchor: '100%',
             layout: 'anchor',
             id: config.id + '-update-available',
             hidden: true,
