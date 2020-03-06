@@ -20,7 +20,7 @@ class simpleUpdaterCheckProcessor extends modProcessor
         $object = array(
             'success' => true,
             'show_button' => false,
-            'connector_url' => $simpleupdater->getOption('assets_url') . 'components/simpleupdater/connector.php'
+            'connector_url' => $simpleupdater->getOption('assetsUrl') . 'components/simpleupdater/connector.php'
         );
         $ttl = 6 * 60 * 60;
         $registry = $this->modx->getService('registry', 'registry.modRegistry');
