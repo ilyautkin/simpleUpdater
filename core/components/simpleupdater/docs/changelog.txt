@@ -1,6 +1,10 @@
 Changelog for simpleUpdater.
 
-2.2.0
+2.2.1-rc2
+==============
+- Fix a not found connector
+
+2.2.0-rc2
 ==============
 - Refactored and normalized the code
 - Possible use of cURL as HTTP Handler get the latest MODX
