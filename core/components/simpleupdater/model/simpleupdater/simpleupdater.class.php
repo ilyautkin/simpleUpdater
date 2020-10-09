@@ -107,6 +107,10 @@ class simpleUpdater
         $githubUser = $this->getOption('github_user');
         $githubToken = $this->getOption('github_token');
         $url = ($githubUser && $githubToken && $addToken) ? str_replace('https://', 'https://' . $githubUser . ':' . $githubToken, $url) : $url;
+        $proxyHost = $this->modx->getOption('proxy_host',null,'');
+        $proxyPort = $this->modx->getOption('proxy_port',null,'');
+        $proxyUserpwd = $this->modx->getOption('proxy_username',null,'');
+        $proxyPassword = $this->modx->getOption('proxy_password',null,'');
 
         switch ($httpHandler) {
             case 'curl':
@@ -114,6 +118,23 @@ class simpleUpdater
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_USERAGENT, 'MODX simpleUpdater');
+                curl_setopt($ch, CURLOPT_TIMEOUT,10);
+
+                if (!empty($proxyHost)) {
+                    curl_setopt($ch, CURLOPT_PROXY, $proxyHost);
+                    if (!empty($proxyPort)) {
+                        curl_setopt($ch, CURLOPT_PROXYPORT, $proxyPort);
+                    }
+                    if (!empty($proxyUserpwd)) {
+                        $proxyAuthType = $this->modx->getOption('proxy_auth_type',null,'BASIC');
+                        $proxyAuthType = $proxyAuthType == 'NTLM' ? CURLAUTH_NTLM : CURLAUTH_BASIC;
+                        curl_setopt($ch, CURLOPT_PROXYAUTH, $proxyAuthType);
+
+                        if (!empty($proxyPassword)) $proxyUserpwd .= ':'.$proxyPassword;
+                        curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyUserpwd);
+                    }
+                }
+
                 $contents = curl_exec($ch);
                 curl_close($ch);
                 $contents = utf8_encode($contents);
@@ -121,12 +142,29 @@ class simpleUpdater
                 break;
             case 'file_get_contents':
             default:
-                $context = stream_context_create(array(
+                $opts = [
                     'http' => array(
                         'method' => 'GET',
                         'header' => 'User-Agent: MODX simpleUpdater'
                     )
-                ));
+                ];
+                if(!empty($proxyHost)) {
+                    $opts['http']['proxy'] = $proxyHost;
+                    $opts['http']['request_fulluri'] = true;
+                    $opts['ssl'] = [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false
+                    ];
+                    if (!empty($proxyPort)) {
+                        $opts['http']['proxy'] .= (":".$proxyPort);
+                    }
+                    if (!empty($proxyUserpwd)) {
+                        $proxyAuthType = $this->modx->getOption('proxy_auth_type',null,'BASIC');
+                        $proxyAuth = base64_encode("$proxyUserpwd".(!empty($proxyPassword) ? (":".$proxyPassword) : ""));
+                        $opts['http']['header'] .= "\r\nProxy-Authorization: $proxyAuthType $proxyAuth";
+                    }
+                }
+                $context = stream_context_create($opts);
                 $contents = file_get_contents($url, false, $context);
                 $contents = utf8_encode($contents);
 

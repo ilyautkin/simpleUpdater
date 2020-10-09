@@ -44,9 +44,36 @@ class simpleUpdaterUpdateProcessor extends modProcessor
         if(extension_loaded('xdebug')){
             ini_set('xdebug.max_nesting_level', 100000);
         }
-        
+
+        //proxy settings
+        $opts = null;
+        $proxyHost = $this->modx->getOption('proxy_host',null,'');
+        if(!empty($proxyHost)) {
+            $opts = [
+                'http' => [
+                    'proxy' => $proxyHost,
+                    'request_fulluri' => true
+                ],
+                'ssl' => [
+                    "verify_peer" => false,
+                    "verify_peer_name" => false
+                ]
+            ];
+            $proxyPort = $this->modx->getOption('proxy_port',null,'');
+            if (!empty($proxyPort)) {
+                $opts['http']['proxy'] .= (":".$proxyPort);
+            }
+            $proxyUserpwd = $this->modx->getOption('proxy_username',null,'');
+            if (!empty($proxyUserpwd)) {
+                $proxyAuthType = $this->modx->getOption('proxy_auth_type',null,'BASIC');
+                $proxyPassword = $this->modx->getOption('proxy_password',null,'');
+                $proxyAuth = base64_encode("$proxyUserpwd".(!empty($proxyPassword) ? (":".$proxyPassword) : ""));
+                $opts['http']['header'] = "Proxy-Authorization: $proxyAuthType $proxyAuth";
+            }
+        }
+
         //run unzip and install
-        ModxInstaller::downloadFile($link, $this->modx->getOption('base_path') . "modx.zip");
+        ModxInstaller::downloadFile($link, $this->modx->getOption('base_path') . "modx.zip", $opts);
         $zip = new ZipArchive;
         $res = $zip->open($this->modx->getOption('base_path') ."modx.zip");
         $zip->extractTo($this->modx->getOption('base_path').'temp' );
@@ -73,11 +100,11 @@ class simpleUpdaterUpdateProcessor extends modProcessor
 
 class ModxInstaller
 {
-    static public function downloadFile($url, $path)
+    static public function downloadFile($url, $path, $opts)
     {
         $newfname = $path;
         try {
-            $file = fopen($url, "rb");
+            $file = fopen($url, "rb", false, $opts ? stream_context_create($opts) : null);
             if ($file) {
                 $newf = fopen($newfname, "wb");
                 if ($newf)
